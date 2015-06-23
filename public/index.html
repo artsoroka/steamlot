@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en" ng-app>
+  <head>
+    <title>SteamLot</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+    
+  </head>
+  <body>
+    <div class="container">
+    <div class="row">
+      <div class="col-md-8">
+        <h2>List of game bets</h2>
+        <div id="game_bets">
+          <ul></ul>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <h2>Make a bid</h2>
+        <form id="newBidForm" action="/bid" method="POST">
+          
+          <input class="form-control" type="text" id="user_id" name="user_id" placeholder="user id"/>
+          <select class="form-control" id="artifact_id" name="artifact_id">
+            <option value="1">Bazooka</option>
+            <option value="2">Sword</option>
+          </select>
+          
+          <input type="submit" class="btn btn-success" value="Submit"/>
+          
+        </form>
+        
+      </div>
+    </div>
+    
+      
+    </div>
+    <script src="/js/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script type="text/javascript">
+      
+      $('#newBidForm').submit(function(e){
+        e.preventDefault();
+          
+        $.ajax({
+          type: "POST",
+          url: '/bid', 
+          data: {
+            user_id: $('#user_id').val(), 
+            artifact_id: $('#artifact_id').val()
+          }, 
+          success: function(msg){
+            console.log(msg); 
+          }, 
+          dataType: 'json'
+        });
+        
+      }); 
+      
+      socket = io.connect(); 
+      DATA = null; 
+      socket.on('newBid', function(bidInfo){
+        DATA = bidInfo; 
+        $('#game_bets ul').append('<li>User ' + bidInfo.userId + ' made a bid of ' + bidInfo.artifactId); 
+        console.log('new bid was made: ', bidInfo); 
+      }); 
+      
+      
+    </script>
+  </body>
+</html>

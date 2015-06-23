@@ -1,0 +1,17 @@
+{
+  "name": "cs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Artem Soroka",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.13.1",
+    "express": "^4.13.0",
+    "mysql": "^2.7.0",
+    "socket.io": "^1.3.5"
+  }
+}
