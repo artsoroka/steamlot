@@ -21,7 +21,7 @@ db.on('newBid', function(msg){
     broadcast('newBid', msg); 
 }); 
 
-app.use(express.static(path.resolve(__dirname, 'public')));
+app.use(express.static(path.resolve(__dirname, '../webapp')));
 app.use(bodyParser.urlencoded({ extended: false })); 
 
 app.get('/game_bets', function(req,res){
