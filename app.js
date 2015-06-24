@@ -24,6 +24,12 @@ db.on('newBid', function(msg){
 app.use(express.static(path.resolve(__dirname, 'public')));
 app.use(bodyParser.urlencoded({ extended: false })); 
 
+app.get('/game_bets', function(req,res){
+  db.getAll(function(data){
+    res.send(JSON.stringify(data)); 
+  }); 
+}); 
+
 app.post('/bid', function(req,res){
    db.newBid({
         userId: req.body.user_id || 0,  
