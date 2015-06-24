@@ -4,12 +4,13 @@ var socketio    = require('socket.io');
 var express     = require('express');
 var bodyParser  = require("body-parser"); 
 var Database    = require('./db'); 
+var config      = require("./config"); 
 
 var app     = express();
 var routes  = require('./routes'); 
 var server  = http.createServer(app);
 var io      = socketio.listen(server);
-var db      = new Database(); 
+var db      = new Database(config.db); 
 var sockets = []; 
 
 app.use(express.static(path.resolve(__dirname, '../webapp')));
@@ -25,7 +26,6 @@ var broadcast = function(event, data){
 db.on('newBid', function(msg){
     broadcast('newBid', msg); 
 }); 
-
 
 io.on('connection', function (socket) {
 
