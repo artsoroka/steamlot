@@ -1,15 +1,21 @@
 var http = require('http');
 var path = require('path');
+var socketio    = require('socket.io');
+var express     = require('express');
+var bodyParser  = require("body-parser"); 
+var Database    = require('./db'); 
+var config      = require("./config"); 
 
-var socketio = require('socket.io');
-var express = require('express');
-var bodyParser = require("body-parser"); 
-var app = express();
-var server = http.createServer(app);
-var io = socketio.listen(server);
+var app     = express();
+var routes  = require('./routes'); 
+var server  = http.createServer(app);
+var io      = socketio.listen(server);
+var db      = new Database(config.db); 
+var sockets = []; 
 
-var DB = require('./db'); 
-var db = new DB(); 
+app.use(express.static(path.resolve(__dirname, '../webapp')));
+app.use(bodyParser.urlencoded({ extended: false })); 
+app.use('/', routes(db)); 
 
 var broadcast = function(event, data){
     sockets.forEach(function(socket){
@@ -43,9 +49,6 @@ var messages = [];
 var sockets  = []; 
 
 io.on('connection', function (socket) {
-    messages.forEach(function (data) {
-      socket.emit('message', data);
-    });
 
     sockets.push(socket);
 
@@ -53,22 +56,6 @@ io.on('connection', function (socket) {
       sockets.splice(sockets.indexOf(socket), 1);
     });
 
-    socket.on('message', function (msg) {
-      var text = String(msg || '');
-      console.log(text); 
-      if (!text)
-        return;
-      
-      socket.broadcast.emit('message', msg);
-      messages.push(msg);
-
-    });
-
-    socket.on('identify', function (name) {
-      socket.set('name', String(name || 'Anonymous'), function (err) {
-        if(err) console.log(err); 
-      });
-    });
 });
 
 server.listen(process.env.PORT || 3000, process.env.IP || "0.0.0.0", function(){
