@@ -26,6 +26,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 app.get('/game_bets', function(req,res){
   db.getAll(function(data){
+    res.set('Content-Type', 'text/json'); 
     res.send(JSON.stringify(data)); 
   }); 
 }); 
